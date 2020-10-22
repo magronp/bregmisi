@@ -9,7 +9,7 @@ __author__ = 'Paul Magron -- IRIT, Université de Toulouse, CNRS, France'
 __docformat__ = 'reStructuredText'
 
 
-def sdr_se(src_ref, src_est, eps=1e-8):
+def get_score(src_ref, src_est, eps=1e-8):
     """Calculate Signal-to-Distortion Ratio (SDR) in a speech enhancement framework
     Args:
         src_ref: numpy.ndarray (nsrc, nsamples) - ground truth sources
@@ -85,7 +85,7 @@ def misi(mix_stft, spectro_mag, win_length=None, hop_length=None, src_ref=None, 
     src_est = amplitude_mask(spectro_mag, mix_stft, win_length=win_length, hop_length=hop_length, win_type=win_type)
 
     if compute_sdr:
-        sdr.append(sdr_se(src_ref, src_est))
+        sdr.append(get_score(src_ref, src_est))
 
     for iteration_number in range(max_iter):
         # STFT
@@ -100,7 +100,7 @@ def misi(mix_stft, spectro_mag, win_length=None, hop_length=None, src_ref=None, 
         src_est = my_istft(stft_est, win_length=win_length, hop_length=hop_length, win_type=win_type)
         # BSS score
         if compute_sdr:
-            sdr.append(sdr_se(src_ref, src_est))
+            sdr.append(get_score(src_ref, src_est))
         # Error
         error.append(np.linalg.norm(current_magnitude - spectro_mag))
 
@@ -156,7 +156,7 @@ def bregmisi(mix_stft, spectro, win_length=None, hop_length=None, win_type='hann
     spectro_mag = np.power(spectro, 1/d)
     src_est = amplitude_mask(spectro_mag, mix_stft, win_length=win_length, hop_length=hop_length, win_type=win_type)
     if compute_sdr:
-        sdr.append(sdr_se(src_ref, src_est))
+        sdr.append(get_score(src_ref, src_est))
 
     # Loop over iterations
     for iteration_number in range(max_iter):
@@ -178,7 +178,7 @@ def bregmisi(mix_stft, spectro, win_length=None, hop_length=None, win_type='hann
 
         # BSS score
         if compute_sdr:
-            sdr.append(sdr_se(src_ref, src_est))
+            sdr.append(get_score(src_ref, src_est))
 
     return src_est, sdr
 

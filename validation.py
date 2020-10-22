@@ -12,7 +12,7 @@ __author__ = 'Paul Magron -- IRIT, Université de Toulouse, CNRS, France'
 __docformat__ = 'reStructuredText'
 
 
-def validation(params, val_sdr_path='output/val_sdr.npz'):
+def validation(params, val_sdr_path='outputs/val_sdr.npz'):
     """ Run the proposed algorithm on the validation subset in different settings
     Args:
         params: dictionary with fields:
@@ -74,7 +74,7 @@ def validation(params, val_sdr_path='output/val_sdr.npz'):
     return
 
 
-def get_opt_gd_step(grad_step_range, val_sdr_path='output/val_sdr.npz'):
+def get_opt_gd_step(grad_step_range, val_sdr_path='outputs/val_sdr.npz'):
     """ Compute the optimal step size from the validation set SDR results
     Args:
         grad_step_range: numpy array - the step size grid
@@ -96,7 +96,7 @@ def get_opt_gd_step(grad_step_range, val_sdr_path='output/val_sdr.npz'):
     return
 
 
-def plot_val_results(input_snr_list, index_left_right=0, val_sdr_path='output/val_sdr.npz'):
+def plot_val_results(input_snr_list, index_left_right=0, val_sdr_path='outputs/val_sdr.npz'):
     """ Plot the results on the validation set
     Args:
         input_snr_list: list - the list of input SNRs

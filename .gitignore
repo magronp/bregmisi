@@ -3,3 +3,5 @@
 *.pth
 *.json
 *.npz
+others.py
+testing_mm.py
