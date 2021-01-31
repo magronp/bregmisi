@@ -1,6 +1,6 @@
 #  Phase recovery with Bregman divergences for audio source separation
 
-This repository contains the code for reproducing the experiments in our paper entitled [Phase recovery with the Bregman divergence for audio source separation](https://arxiv.org/abs/2010.00392), published at the IEEE Internation Conference on Audio, Speech, and Signal Processing (ICASSP) I2021.
+This repository contains the code for reproducing the experiments in our paper entitled [Phase recovery with the Bregman divergence for audio source separation](https://arxiv.org/abs/2010.00392), published at the IEEE Internation Conference on Audio, Speech, and Signal Processing (ICASSP) 2021.
 
 ### Getting the data
 
