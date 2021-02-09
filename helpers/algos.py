@@ -107,23 +107,41 @@ def misi(mix_stft, spectro_mag, win_length=None, hop_length=None, src_ref=None, 
     return src_est, error, sdr
 
 
-def grad_beta(Axd, mag, beta=2., direc='right', eps=1e-8):
+def grad_beta(Axd, spectro, beta=2., direc='right', eps=1e-8):
 
     if direc == 'right':
-        Z = (np.abs(Axd) + eps) ** (beta - 2) * (np.abs(Axd) - mag)
+        G = (np.abs(Axd) + eps) ** (beta - 2) * (np.abs(Axd) - spectro)
     else:
         if beta == 0:
-            Z = 1 / (mag + 1e-8) - 1 / (np.abs(Axd) + 1e-8)
+            G = 1 / (spectro + eps) - 1 / (np.abs(Axd) + eps)
         elif beta == 1:
-            Z = np.log((np.abs(Axd)) / (mag + 1e-8) + 1e-8)
+            G = np.log((np.abs(Axd)) / (spectro + eps) + eps)
         else:
-            Z = ((np.abs(Axd) + eps) ** (beta - 1) - (mag + eps) ** (beta - 1)) / (beta - 1)
+            G = ((np.abs(Axd) + eps) ** (beta - 1) - (spectro + eps) ** (beta - 1)) / (beta - 1)
 
-    return Z
+    return G
+
+
+def grad_beta_eps(stft_est, spectro, d=1, beta=2., direc='right', eps=1e-8):
+
+    spectro_eps = (spectro ** (2/d) + eps) ** (d/2)
+    abs_Axd_eps = (np.abs(stft_est) ** 2 + eps) ** (d/2)
+
+    if direc == 'right':
+        G = abs_Axd_eps ** (beta - 2) * (abs_Axd_eps - spectro_eps)
+    else:
+        if beta == 0:
+            G = 1 / spectro_eps - 1 / abs_Axd_eps
+        elif beta == 1:
+            G = np.log(abs_Axd_eps / spectro_eps)
+        else:
+            G = (abs_Axd_eps ** (beta - 1) - spectro_eps ** (beta - 1)) / (beta - 1)
+
+    return G
 
 
 def bregmisi(mix_stft, spectro, win_length=None, hop_length=None, win_type='hann', src_ref=None, beta=2., d=1,
-             grad_step=1e-3, direc='right', max_iter=20):
+             grad_step=1e-3, direc='right', max_iter=20, eps=1e-8):
     """The Gradient Descent algorithm for phase recovery in audio source separation
     Args:
         mix_stft: numpy.ndarray (nfreqs, nframes) - input mixture STFT
@@ -137,6 +155,7 @@ def bregmisi(mix_stft, spectro, win_length=None, hop_length=None, win_type='hann
         d: int - magnitude (1) or power (2) measurements
         beta: float - parameter of the beta-divergence
         grad_step: float - step size for the gradient descent
+        eps: float - small ridge added to the loss for avoiding numerical issues
     Returns:
         src_est: numpy.ndarray (nsamples, nrsc) - the time-domain estimated sources
         sdr: list (max_iter) - score (SDR in dB) over iterations
@@ -165,8 +184,10 @@ def bregmisi(mix_stft, spectro, win_length=None, hop_length=None, win_type='hann
         stft_est = my_stft(src_est, n_fft=n_fft, hop_length=hop_length, win_length=win_length, win_type=win_type)
 
         # Gradient descent in the TF domain
-        Z = grad_beta(stft_est ** d, spectro, beta, direc)
-        breg_grad = d * (stft_est * (np.abs(stft_est) ** (d - 2)) * Z)
+        #G = grad_beta(stft_est ** d, spectro, beta, direc)
+        #breg_grad = d * (stft_est * (np.abs(stft_est) ** (d - 2)) * G)
+        G = grad_beta_eps(stft_est, spectro, d, beta, direc, eps)
+        breg_grad = d * (stft_est * ((np.abs(stft_est) ** 2 + eps) ** (d/2 - 1)) * G)
         stft_est -= grad_step * breg_grad
 
         # Compute and distribute the mixing error

@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from matplotlib import pyplot as plt
 from helpers.algos import bregmisi_all
 from helpers.data_io import load_src
 from helpers.stft import my_stft
 from open_unmx.estim_spectro import estim_spectro_from_mix
+from helpers.plotter import plot_val_results
+np.random.seed(0)  # Set random seed for reproducibility
 
 __author__ = 'Paul Magron -- IRIT, Université de Toulouse, CNRS, France'
 __docformat__ = 'reStructuredText'
@@ -92,59 +93,6 @@ def get_opt_gd_step(grad_step_range, val_sdr_path='outputs/val_sdr.npz'):
     # Get the optimal step size
     gd_step_opt = grad_step_range[np.argmax(sdr_av[-1, :], axis=0)]
     np.savez('outputs/val_gd_step.npz', gd_step=gd_step_opt)
-
-    return
-
-
-def plot_val_results(input_snr_list, index_left_right=0, val_sdr_path='outputs/val_sdr.npz'):
-    """ Plot the results on the validation set
-    Args:
-        input_snr_list: list - the list of input SNRs
-        index_left_right: int - corresponds to the direction of the problem: "right" (0) or "left" (1)
-        val_sdr_path: string - the path where to load the validation SDR
-    """
-
-    # Load the validation SDR and average over mixtures
-    sdr = np.load(val_sdr_path)['sdr']
-    sdr_av = np.nanmean(sdr, axis=-1)
-
-    # Get the improvement over initialization
-    sdri = sdr_av[-1, :] - sdr_av[0, :]
-
-    # Remove Nans and values below 0 for better visibility
-    sdri[np.isnan(sdri)] = 0
-    sdri[sdri < 0] = 0
-
-    # Select the config to plot
-    sdr_plot = sdri[:, :, :, index_left_right, :]
-
-    # Plot results
-    plt.figure(0)
-    n_isnr = len(input_snr_list)
-    my_extent = [0, 2, -7, 1]
-
-    # First subplot for d=1
-    for index_isnr in range(n_isnr):
-        plt.subplot(2, n_isnr, index_isnr + 1)
-        plt.imshow(sdr_plot[:, :, 0, index_isnr], aspect='auto', origin='lower', extent=my_extent)
-        if index_isnr == 0:
-            plt.ylabel('Step size (log)')
-        else:
-            plt.yticks([])
-        plt.xticks([])
-        plt.colorbar()
-        plt.title('input SNR = ' + str(input_snr_list[index_isnr]) + ' dB')
-
-    # Second subplot for d=2
-    for index_isnr in range(n_isnr):
-        plt.subplot(2, n_isnr, index_isnr + 1 + n_isnr)
-        plt.imshow(sdr_plot[:, :, 1, index_isnr], aspect='auto', origin='lower', extent=my_extent)
-        if index_isnr == 0:
-            plt.ylabel('Step size (log)')
-        else:
-            plt.yticks([])
-        plt.xlabel(r'$\beta$')
-        plt.colorbar()
 
     return
 

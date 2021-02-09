@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from matplotlib import pyplot as plt
 from helpers.algos import get_score, amplitude_mask, misi, bregmisi_all
 from helpers.data_io import load_src, record_src
 from helpers.stft import my_stft
 from open_unmx.estim_spectro import estim_spectro_from_mix
+from helpers.plotter import plot_test_results, plot_test_results_pernoise
+np.random.seed(0)  # Set random seed for reproducibility
 
 __author__ = 'Paul Magron -- IRIT, Université de Toulouse, CNRS, France'
 __docformat__ = 'reStructuredText'
@@ -92,46 +93,6 @@ def testing(params, test_sdr_path='outputs/test_sdr.npz'):
     return
 
 
-def plot_test_results(input_snr_list, beta_range, test_sdr_path='outputs/test_sdr.npz'):
-    """ Plot the results on the test set
-    Args:
-        input_snr_list: list - the list of input SNRs
-        beta_range: list - the range for the values of beta
-        test_sdr_path: string - the path where to load the test SDR
-    """
-    # Load the data
-    data = np.load(test_sdr_path)
-    sdr_am, sdr_misi, sdr_gd = data['sdr_am'], data['sdr_misi'], data['sdr_gd']
-
-    # Get the SDR improvement over amplitude mask
-    sdr_misi -= sdr_am
-    sdr_gd -= sdr_am
-
-    # Mean SDR
-    sdr_misi_av = np.nanmean(sdr_misi, axis=-1)
-    sdr_gd_av = np.nanmean(sdr_gd, axis=-1)
-
-    # Plot results
-    n_isnr = len(input_snr_list)
-    plt.figure(0)
-    for index_isnr in range(n_isnr):
-        plt.subplot(1, n_isnr, index_isnr+1)
-        plt.plot(beta_range[1:], sdr_gd_av[1:, 0, 0, index_isnr], color='b', marker='x')
-        plt.plot(beta_range[1:], sdr_gd_av[1:, 1, 0, index_isnr], color='b', marker='o')
-        plt.plot(beta_range[1:], sdr_gd_av[1:, 0, 1, index_isnr], color='r', marker='x')
-        plt.plot(beta_range[1:], sdr_gd_av[1:, 1, 1, index_isnr], color='r', marker='o')
-        plt.plot([0, 2], [sdr_misi_av[index_isnr], sdr_misi_av[index_isnr]], linestyle='--', color='k')
-        plt.xlabel(r'$\beta$')
-        plt.ylim(0.25, 1.25)
-        if index_isnr == 0:
-            plt.ylabel('SDRi (dB)')
-        plt.title('input SNR = ' + str(input_snr_list[index_isnr]) + ' dB')
-    plt.legend(['right, d=1', 'right, d=2', 'left, d=1', 'left, d=2', 'MISI'])
-    plt.tight_layout()
-
-    return
-
-
 if __name__ == '__main__':
 
     # Parameters
@@ -147,10 +108,13 @@ if __name__ == '__main__':
               }
 
     # Run the benchmark on the test set
-    testing(params)
+    #testing(params)
 
     # Plot the results
     plot_test_results(params['input_SNR_list'], params['beta_range'])
+
+    # Plot the results for each noise type (living room, public square, and bus)
+    #plot_test_results_pernoise(params['input_SNR_list'], params['beta_range'])
 
 # EOF
 
