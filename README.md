@@ -1,6 +1,10 @@
 #  Phase recovery with Bregman divergences for audio source separation
 
+<<<<<<< HEAD
 This repository contains the code for reproducing the experiments in our paper entitled [Phase recovery with the Bregman divergence for audio source separation](https://arxiv.org/abs/2010.10255), published at the IEEE International Conference on Audio, Speech and Signal Processing (ICASSP) 2021.
+=======
+This repository contains the code for reproducing the experiments in our paper entitled [Phase recovery with the Bregman divergence for audio source separation](https://arxiv.org/abs/2010.10255), published at the IEEE Internation Conference on Audio, Speech, and Signal Processing (ICASSP) 2021.
+>>>>>>> 7dfc7e7dbe015dfad3b3dce69256aadc87d4bc0b
 
 ### Getting the data
 
@@ -29,7 +33,7 @@ Now that you're all set, simply run the following scripts:
 - `validation.py` will perform a grid search over the gradient step size on the validation subset to determine its optimal value for every setting.
 It will also reproduce Fig. 1 from the paper.
 
-- `test.py` will run the algorithms (proposed gradient descent and MISI) on the test subset and plot the results corresponding to Fig. 2 in the paper.
+- `testing.py` will run the algorithms (proposed gradient descent and MISI) on the test subset and plot the results corresponding to Fig. 2 in the paper.
 
 
 ### Reference
