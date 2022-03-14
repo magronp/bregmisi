@@ -6,7 +6,7 @@ This repository contains the code for reproducing the experiments in our paper e
 
 After cloning or downloading this repository, you will need to get the speech and noise data to reproduce the results.
 
-* The speech data is obtained from the __VoiceBank__ dataset available [here](https://datashare.is.ed.ac.uk/handle/10283/2791). You should download the `clean_test_wav.zip` file, and unzip it in the `data/VoiceBank/` folder.
+* The speech data is obtained from the __VoiceBank__ dataset available [here](https://datashare.is.ed.ac.uk/handle/10283/2791). You should download the `clean_testset_wav.zip` file, and unzip it in the `data/VoiceBank/` folder.
 Note that you can change the folder structure, as long as you change the path accordingly in the code.
 
 * The noise data is obtained from the __DEMAND__ dataset available [here](https://zenodo.org/record/1227121#.X4hjZXZfg5k). You should download the `DLIVING_16k.zip`, `SPSQUARE_16k.zip` and `TBUS_16k.zip` files, and unzip them in the `data/DEMAND/` folder.
