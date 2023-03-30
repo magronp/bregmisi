@@ -39,7 +39,7 @@ It will also reproduce Fig. 1 from the paper.
 ```latex
 @inproceedings{Magron2021,  
   author={P. Magron and P.-H. Vial and T. Oberlin and C. F{\'e}votte},  
-  title={Phase recovery with Bregman divergences for audio source separation},  
+  title={Phase recovery with {B}regman divergences for audio source separation},  
   booktitle={Proc. IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},  
   year={2021},
   month={June}
